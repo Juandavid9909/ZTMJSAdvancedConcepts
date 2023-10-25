@@ -198,3 +198,8 @@ heyhey();
 ```
 
 Su comportamiento es extraño porque la función se crea a sí misma en su contexto, por lo que se puede llamar usando el nombre *doodle* a pesar de que la variable que contiene la función se llama *heyhey*.
+
+
+## Function Scope vs Block Scope
+
+El scope de funciones es cuando creamos variables dentro de funciones, ya que tendrán un scope local, es decir que en scope global dichas variables no serán accesibles. El scope de bloque  es dentro de alguna condición, for, etc (es decir dentro de unas {}) usando `let` y/o `const` ya que tampoco serán accesibles las variables que se encuentren dentro de las llaves actuales, en cambio si usamos var sí serían accesibles.
