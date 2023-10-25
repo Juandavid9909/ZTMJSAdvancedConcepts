@@ -203,3 +203,33 @@ Su comportamiento es extraño porque la función se crea a sí misma en su conte
 ## Function Scope vs Block Scope
 
 El scope de funciones es cuando creamos variables dentro de funciones, ya que tendrán un scope local, es decir que en scope global dichas variables no serán accesibles. El scope de bloque  es dentro de alguna condición, for, etc (es decir dentro de unas {}) usando `let` y/o `const` ya que tampoco serán accesibles las variables que se encuentren dentro de las llaves actuales, en cambio si usamos `var` sí serían accesibles.
+
+## IIFE (Immediately Invoked Function Expression)
+
+Son conocidas con funciones anónimas y nos permiten tener un scope aparte del contexto de ejecución global para nuestras variables, a continuación un ejemplo:
+
+```
+(function() {
+})()
+```
+
+Si necesitamos tener 2 funciones con el mismo nombre en nuestro código podemos hacer algo como lo siguiente:
+
+```
+var script1 = (function() {
+	function a() {
+		return 5;
+	}
+
+	return {
+		a: a
+	}
+})()
+
+function a() {
+	return "hahaha";
+}
+
+a();
+sript1.a();
+```
