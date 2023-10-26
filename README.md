@@ -231,7 +231,7 @@ function a() {
 }
 
 a();
-sript1.a();
+script1.a();
 ```
 
 ## This keyword
@@ -405,3 +405,30 @@ let multiplyByTwo = multiply.bind(this, 2);
 
 console.log(multiplyByTwo(4));
 ```
+
+
+# Types in JavaScript
+
+Hay 7 tipos en JavaScript, `number`, `boolean`, `string`, `undefined`, `null (object)`, `symbol` y `object`. Para validar el tipo de un dato/variable existe el operador `typeof`.
+
+Hay que tener en cuenta que los arreglos y las funciones (si haces `typeof` de una función JavaScript te retornará `function`)  son en sí `object`. Una forma de confirmar esto es la siguiente:
+
+```
+function a() {
+	return 5;
+}
+
+a.hi = "hihihihihi"; // Agregará dicha propiedad a la función
+
+console.log(a.hi);
+```
+
+## Differences between undefined and null
+
+La diferencia entre `undefined` y `null` es que `undefined` es la ausencia de una definición, y `null` es la ausencia de un valor.
+
+## Primitive types and non primitive types
+
+En JavaScript a excepción de los objetos todos los tipos mencionados anteriormente son primitivos, es decir que es data que sólo representa un valor en sí, los tipos no primitivos son los que heredan de objecto (o el mismo objeto) ya que puede ir creciendo su información.
+
+Hay un dicho que dice "Todo en JavaScript es un objeto", y de cierta forma es así, por ejemplo al usar un tipo primitivo con `toString()` seguirá funcionando, por ejemplo `true.toString()`.
