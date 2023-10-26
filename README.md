@@ -315,3 +315,93 @@ const obj = {
 	}
 }
 ```
+
+## call(), apply() y bind()
+
+`call()` y `apply()` nos permiten ejecutar funciones, por ejemplo si tenemos la función `a`, normalmente haríamos el llamado `a()`, sin embargo, también podríamos hacerlo `a.call()` o `a.apply()`.
+
+Entonces, ¿por qué debería de usar alguno de estos métodos? Básicamente porque nos permitirá usar una función de un objeto en otro objeto que le indicaremos a JavaScript, a continuación un ejemplo.
+
+```
+const wizard = {
+	name: "Merlin",
+	health: 50,
+	heal() {
+		return this.health = 100;
+	}
+}
+
+const archer = {
+	name: "Robin Hood",
+	health: 30
+}
+
+wizard.heal.call(archer); // También se puede usar apply()
+
+// Si necesitamos parámetros
+const wizard = {
+	name: "Merlin",
+	health: 50,
+	heal(num1, num2) {
+		return this.health += num1 + num2;
+	}
+}
+
+const archer = {
+	name: "Robin Hood",
+	health: 30
+}
+
+wizard.heal.call(archer, 50, 30);
+// wizard.heal.call(archer, [50, 30]); // Otra forma
+```
+
+La diferencia de `call()` y `apply()` con `bind()` es que esta última no ejecuta directamente la función que deseamos, sino que nos retorna una función nueva con cierto contexto y parámetros, un ejemplo a continuación.
+
+```
+const wizard = {
+	name: "Merlin",
+	health: 50,
+	heal() {
+		return this.health = 100;
+	}
+}
+
+const archer = {
+	name: "Robin Hood",
+	health: 30
+}
+
+wizard.heal.call(archer); // También se puede usar apply()
+
+// Si necesitamos parámetros
+const wizard = {
+	name: "Merlin",
+	health: 50,
+	heal(num1, num2) {
+		return this.health += num1 + num2;
+	}
+}
+
+const archer = {
+	name: "Robin Hood",
+	health: 30
+}
+
+const healArcher = wizard.heal.bind(archer, 50, 30);
+healArcher(); // Hará el cambio aquí, no cuando se define el bind
+```
+
+## bind() and currying
+
+En algunas ocasiones querremos utilizar `bind` para copiar funciones pero no pasar todos los parámetros de forma inmediata, podemos hacer algo como lo siguiente:
+
+```
+function multiply(a, b) {
+	return a * b;
+}
+
+let multiplyByTwo = multiply.bind(this, 2);
+
+console.log(multiplyByTwo(4));
+```
