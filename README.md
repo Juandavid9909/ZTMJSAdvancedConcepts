@@ -233,3 +233,85 @@ function a() {
 a();
 sript1.a();
 ```
+
+## This keyword
+
+`this` hace referencia al objeto que tiene como propiedad la función donde lo ejecutamos. Es por esto que en el contexto global de nuestro código `this` hará referencia a window, sin embargo, si usamos el `"use strict"` la palabra `this` ya no hará referencia a window.
+
+Los módulos en ES6 ya traen por defecto el `"use strict"`. A continuación unos ejemplos del uso de `this`.
+
+```
+// Ventaja 1
+const obj = {
+	name: "Veronica",
+	sing: function() {
+		return "lalala " + this.name; // Apunta a nombre ya que obj es el objeto del cual la función es propiedad
+	},
+	signAgain() {
+		return this.sign() + "!"; // Apunta también al nombre
+	}
+};
+
+obj.sing();
+
+// Ventaja 2
+function importantPerson() {
+	console.log(this.name);
+}
+
+const name = "Sunny";
+const obj1 = {
+	name: "Cassy",
+	importantPerson
+};
+const obj2 = {
+	name: "Jacob",
+	importantPerson
+};
+
+importantPerson(); // Apunta a window => Sunny
+obj1.importantPerson(); // Apunta a obj1 => Cassy
+obj2.importantPerson(); // Apunta a obj2 => Jacob
+```
+
+### Ventajas
+- Da acceso a los métodos del objeto en el que estamos.
+- Ejecuta el mismo código para múltiples objetos.
+
+### Ejercicio Dynamic Scope vs Lexical Scope
+```
+const a = function() {
+	console.log("a", this);
+
+	const b = function() {
+		console.log("b", this);
+	
+		const c = {
+			hi: function() {
+				console.log("c", this);
+			}
+		}
+	
+		c.hi(); // c
+	}
+
+	b(); // Window
+}
+
+a(); // Window
+
+
+const obj = {
+	name: "Billy",
+	sign() {
+		console.log("a", this); // obj
+
+		var anotherFunc = () => {
+			console.log("b", this); // Con función de flecha obj, con function window
+		}
+		
+		anotherFunc();
+		// return anotherFunc.bind(this); // Por si queremos usar el function sin arrow functions y que retorne obj, también se podría declarar una variable antes de la declaración de la función que sea igual a this y hacer el console.log a la misma
+	}
+}
+```
