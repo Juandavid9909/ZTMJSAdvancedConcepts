@@ -36,7 +36,7 @@ Cuando recibimos argumentos en una función lo más recomendable es no reasignar
 
 A continuación un bloque de código de ejemplo:
 
-```
+```javascript
 const number = 610; // Allocate memory for number
 const string = "some text"; // Allocate memory for a string
 const human = { // Allocate memory for an object... and it's values
@@ -70,7 +70,7 @@ JavaScript es un lenguaje de programación que usa Garbage Collector, esto signi
 
 El Memory Leak se produce cuando un bloque de memoria reservado no se libera en un programa. Para crear nuestro propio Memory Leak podemos hacer algo como lo siguiente:
 
-```
+```javascript
 let array = [];
 
 for(let i = 5; i > 1; i++) {
@@ -86,7 +86,7 @@ JavaScript es Single Threaded, esto significa que ejecuta una función a la vez,
 
 JavaScript tiene Hoisting, es decir que tiene la capacidad de no romper la ejecución de código cuando llamamos a una variable o una función antes de su inicialización, para las variables sólo funciona con `var`, también tiene en cuenta la reasignación con `var` de una misma variable, de ser así no declara una segunda variable sino que reescribe el valor de la primera.
 
-```
+```javascript
 console.log("1------");
 console.log(teddy);
 console.log(sign());
@@ -106,7 +106,7 @@ function sign() {
 ### Global Execution Context
 Contiene el **Creation Phase** y el **Execution Phase**, y cada vez que llamamos una función se realiza cada una de estas fases. A continuación un ejemplo:
 
-```
+```javascript
 var favouriteFood = "grapes";
 
 var foodThoughts = function() {
@@ -127,7 +127,7 @@ En este bloque de código el resultado es `undefined` y `sushi` para los `consol
 ### Function Expression
 Es la declaración de funciones pero usando asignación de variables con function o funciones de flecha.
 
-```
+```javascript
 var canada = function() {
 	console.log("cold");
 }
@@ -136,7 +136,7 @@ var canada = function() {
 ### Function Declaration
 Cuando simplemente creamos una función, tal como:
 
-```
+```javascript
 function india() {
 	console.log("warm");
 }
@@ -149,7 +149,7 @@ Puedes tener **Function Invocation/Call/Execution** haciendo algo como `canada()
 
 No existe en el contexto global, sólo en el contexto de las funciones, para usarlo se debe ejecutar de la siguiente manera:
 
-```
+```javascript
 function marry(person1, person2) {
 	console.log("arguments", arguments);
 	console.log(Array.from(arguments));
@@ -162,7 +162,7 @@ marry("Tim", "Tina");
 
 Sin embargo, no es la forma recomendada de generar un arreglo (se debe hacer la conversión porque llega como un objeto) con todos los parámetros de la función, si ese es nuestro objetivo podemos utilizar el **spread operator** de JavaScript para hacerlo.
 
-```
+```javascript
 function marry2(...args) {
 	console.log(args);
 
@@ -187,7 +187,7 @@ Cuando creamos variables sin `const`, `let` o `var` en una función con una asig
 
 Otro comportamiento extraño es el siguiente:
 
-```
+```javascript
 var heyhey = function doodle() {
 	doodle();
 
@@ -204,18 +204,19 @@ Su comportamiento es extraño porque la función se crea a sí misma en su conte
 
 El scope de funciones es cuando creamos variables dentro de funciones, ya que tendrán un scope local, es decir que en scope global dichas variables no serán accesibles. El scope de bloque  es dentro de alguna condición, for, etc (es decir dentro de unas {}) usando `let` y/o `const` ya que tampoco serán accesibles las variables que se encuentren dentro de las llaves actuales, en cambio si usamos `var` sí serían accesibles.
 
+
 ## IIFE (Immediately Invoked Function Expression)
 
 Son conocidas con funciones anónimas y nos permiten tener un scope aparte del contexto de ejecución global para nuestras variables, a continuación un ejemplo:
 
-```
+```javascript
 (function() {
 })()
 ```
 
 Si necesitamos tener 2 funciones con el mismo nombre en nuestro código podemos hacer algo como lo siguiente:
 
-```
+```javascript
 var script1 = (function() {
 	function a() {
 		return 5;
@@ -234,13 +235,14 @@ a();
 script1.a();
 ```
 
+
 ## This keyword
 
 `this` hace referencia al objeto que tiene como propiedad la función donde lo ejecutamos. Es por esto que en el contexto global de nuestro código `this` hará referencia a window, sin embargo, si usamos el `"use strict"` la palabra `this` ya no hará referencia a window.
 
 Los módulos en ES6 ya traen por defecto el `"use strict"`. A continuación unos ejemplos del uso de `this`.
 
-```
+```javascript
 // Ventaja 1
 const obj = {
 	name: "Veronica",
@@ -279,7 +281,7 @@ obj2.importantPerson(); // Apunta a obj2 => Jacob
 - Ejecuta el mismo código para múltiples objetos.
 
 ### Ejercicio Dynamic Scope vs Lexical Scope
-```
+```javascript
 const a = function() {
 	console.log("a", this);
 
@@ -316,13 +318,14 @@ const obj = {
 }
 ```
 
+
 ## call(), apply() y bind()
 
 `call()` y `apply()` nos permiten ejecutar funciones, por ejemplo si tenemos la función `a`, normalmente haríamos el llamado `a()`, sin embargo, también podríamos hacerlo `a.call()` o `a.apply()`.
 
 Entonces, ¿por qué debería de usar alguno de estos métodos? Básicamente porque nos permitirá usar una función de un objeto en otro objeto que le indicaremos a JavaScript, a continuación un ejemplo.
 
-```
+```javascript
 const wizard = {
 	name: "Merlin",
 	health: 50,
@@ -358,7 +361,7 @@ wizard.heal.call(archer, 50, 30);
 
 La diferencia de `call()` y `apply()` con `bind()` es que esta última no ejecuta directamente la función que deseamos, sino que nos retorna una función nueva con cierto contexto y parámetros, un ejemplo a continuación.
 
-```
+```javascript
 const wizard = {
 	name: "Merlin",
 	health: 50,
@@ -392,11 +395,12 @@ const healArcher = wizard.heal.bind(archer, 50, 30);
 healArcher(); // Hará el cambio aquí, no cuando se define el bind
 ```
 
+
 ## bind() and currying
 
 En algunas ocasiones querremos utilizar `bind` para copiar funciones pero no pasar todos los parámetros de forma inmediata, podemos hacer algo como lo siguiente:
 
-```
+```javascript
 function multiply(a, b) {
 	return a * b;
 }
@@ -413,7 +417,7 @@ Hay 7 tipos en JavaScript, `number`, `boolean`, `string`, `undefined`, `null (ob
 
 Hay que tener en cuenta que los arreglos y las funciones (si haces `typeof` de una función JavaScript te retornará `function`)  son en sí `object`. Una forma de confirmar esto es la siguiente:
 
-```
+```javascript
 function a() {
 	return 5;
 }
@@ -423,12 +427,62 @@ a.hi = "hihihihihi"; // Agregará dicha propiedad a la función
 console.log(a.hi);
 ```
 
+
 ## Differences between undefined and null
 
 La diferencia entre `undefined` y `null` es que `undefined` es la ausencia de una definición, y `null` es la ausencia de un valor.
+
 
 ## Primitive types and non primitive types
 
 En JavaScript a excepción de los objetos todos los tipos mencionados anteriormente son primitivos, es decir que es data que sólo representa un valor en sí, los tipos no primitivos son los que heredan de objecto (o el mismo objeto) ya que puede ir creciendo su información.
 
 Hay un dicho que dice "Todo en JavaScript es un objeto", y de cierta forma es así, por ejemplo al usar un tipo primitivo con `toString()` seguirá funcionando, por ejemplo `true.toString()`.
+
+
+## Array.isArray()
+
+Como mencioné anteriormente, los arreglos son objetos, pero si requerimos comprobar si una variable es un arreglo podemos hacer uso de `Array.isArray(nuestroArreglo)`.
+
+
+## Pass By Value vs Pass By Reference
+
+Para los tipos primitivos el paso siempre será por valor, para los no primitivos siempre será por referencia, esto nos permite ahorrar espacio en memoria, pero si queremos hacer la copia de una variable no primitiva (objeto) podemos usar el **spread operator**.
+
+```javascript
+var a = 5;
+var b = a;
+
+b++; //a = 5 y b = 6
+
+let obj1 = { name: "Yao", password: "123" };
+let obj2 = obj1;
+
+obj2.password = "easypeasy"; // Afecta tanto a obj1 como a obj2
+
+// Copiar arreglo
+b = [...a];
+
+// Copiar objeto
+obj2 = Object.assign({}, obj1);
+var obj3 = {...obj1};
+```
+
+Es importante tener claro que para copiar objetos sólo se clona el primer nivel (spread operator), pero si tenemos más de un nivel estos también se pasarán por referencia, si necesitamos hacer una copia de todo el objeto en todos los niveles podemos usar `JSON.parse(JSON.stringify(obj))`.
+
+### Comparar 2 objetos en distintas ubicaciones de memoria
+```javascript
+var user1 = { name: "nerd", org: "dev" };
+var user2 = { name: "nerd", org: "dev" };
+
+// Da false porque compara la ubicación en memoria
+var eq = user1 == user2;
+
+// Dar true porque compara los valores
+var eq = Object.toJSON(user1) == Object.toJSON(user2);
+
+alert(eq);
+
+// Más rápido pero limitado
+JSON.stringify(obj1) === JSON.stringify(obj2) 
+```
