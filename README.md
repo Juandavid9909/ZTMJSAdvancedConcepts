@@ -498,3 +498,55 @@ Esto nos permite hacer comparación entre 2 valores primitivos de distinto tipo 
 Un buen recurso sería el de [GitHub Dorey](https://dorey.github.io/JavaScript-Equality-Table/) o también el de [Mozilla](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
 
 Hay una opción nueva y es `Object.is(a, b)` para comparar 2 tipos de forma estricta, es decir que si usamos `Object.is(-0, +0)` el resultado será `false` a pesar de que usando el `==` o `===` dará `true`.
+
+
+# The 2 Pillars: Closures and Prototypal Inheritance
+
+## Functions are objects
+
+Cuando creamos una función automáticamente tenemos 2 parámetros, el `this` y `arguments`. Hay varias formas formas de definir e invocar funciones:
+
+```javascript
+// Forma 1
+function one() {
+	return 1;
+}
+
+one();
+
+// Forma 2
+const obj = {
+	two() { // O two: function() {
+		return 2;
+	}
+}
+
+obj.two();
+
+// Forma 3
+function three() {
+	return 3;
+}
+
+three.call();
+
+// Forma 4: Function Constructor
+const four = new Function("return 4");
+const four1 = new Function("num", "return num");
+
+four();
+four1(4);
+
+// Como se vería la función por debajo
+function woohooo() {
+	console.log("wooohooo");
+}
+
+woohooo.yell = "ahhhhhhh";
+
+const specialObj = {
+	yell: "ahhhhhhh",
+	name: "woohooo",
+	(): console.log("wooohooo")
+};
+```
