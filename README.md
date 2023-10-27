@@ -466,6 +466,9 @@ b = [...a];
 // Copiar objeto
 obj2 = Object.assign({}, obj1);
 var obj3 = {...obj1};
+
+// Copiar objetos de manera profunda (en casi todos los navegadores)
+const copia = structuredClone(obj);
 ```
 
 Es importante tener claro que para copiar objetos sólo se clona el primer nivel (spread operator), pero si tenemos más de un nivel estos también se pasarán por referencia, si necesitamos hacer una copia de todo el objeto en todos los niveles podemos usar `JSON.parse(JSON.stringify(obj))`.
@@ -484,5 +487,14 @@ var eq = Object.toJSON(user1) == Object.toJSON(user2);
 alert(eq);
 
 // Más rápido pero limitado
-JSON.stringify(obj1) === JSON.stringify(obj2) 
+JSON.stringify(obj1) === JSON.stringify(obj2);
 ```
+
+
+## Type Coercion
+
+Esto nos permite hacer comparación entre 2 valores primitivos de distinto tipo dando `true`. Todos los lenguajes tienen **Type Coercion** porque siempre necesitamos convertir tipos entre programas para lograr nuestro objetivo. Esto sucede en JavaScript cuando hacemos la comparación con `==` y no cuando la hacemos con `===`. También si tenemos un `if(1)` JavaScript le hará **Type Coercion** al 1 y lo tomará como un `true`.
+
+Un buen recurso sería el de [GitHub Dorey](https://dorey.github.io/JavaScript-Equality-Table/) o también el de [Mozilla](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness).
+
+Hay una opción nueva y es `Object.is(a, b)` para comparar 2 tipos de forma estricta, es decir que si usamos `Object.is(-0, +0)` el resultado será `false` a pesar de que usando el `==` o `===` dará `true`.
