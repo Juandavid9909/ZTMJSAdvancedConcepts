@@ -616,3 +616,100 @@ const multiplyByFive = multiply(5);
 multiplyByTwo(4);
 multiplyByFive(6);
 ```
+
+
+## Closures
+
+Es simplemente una combinación de una función y el lexical environment para el cual fue declarada. En otras palabras son funciones anidadas que van haciendo uso de variables declaradas en funciones padres, esto permite que el **Garbage Collector** de JavaScript no elimine dichas variables ya que son necesarias en funciones hijas.
+
+```javascript
+function a() {
+  let grandpa = 'grandpa';
+  return function b() {
+    let father = 'father';
+    return function c() {
+      let son = 'son';
+      return `${ grandpa } > ${ father } > ${ son }`;
+    }
+  }
+}
+
+a();
+
+//closures and higher order function
+function boo(string) {
+  return function(name) {
+    return function(name2) {
+      console.log(`hi ${ name2 }`);
+    }
+  }
+}
+
+const boo2 = (string) => (name) => (name2) => console.log(`hi ${ name2 }`);
+
+boo('hi')('john')('tanya');
+
+// AHH! HOW DOES IT REMEMBER THIS 5 years from now?
+booString = boo2('sing');
+booStringName = booString('John');
+booStringNameName2 = booStringName('tanya');
+```
+
+
+## Closures and memory and encapsulation
+
+Los **Closures** nos permiten guardar espacio en memoria ya que las variables no se declaran nuevamente debido a que se guardan en el contexto de la función (y el box de los **Closures**) y con la encapsulación  podemos limitar el acceso de funciones y/o variables dentro de nuestra clausura y dar el acceso a sólo lo que queramos.
+
+```javascript
+// Memory efficient
+function heavyDuty(index) {
+	const bigArray = new Array(7000).fill("hi");
+	
+	console.log("Created!");
+	
+	return bigArray[index];
+}
+
+heavyDuty(688);
+heavyDuty(688);
+heavyDuty(688);
+
+const getHeavyDuty = heavyDuty2();
+
+getHeavyDuty(688);
+getHeavyDuty(700);
+getHeavyDuty(800);
+
+function heavyDuty2() {
+	const bigArray = new Array(7000).fill("hi");
+	console.log("Created!");
+	
+	
+	return function(index) {
+		return bigArray[index];
+	}
+}
+
+// Encapsulation
+const makeNuclearButton = () => {
+	let timeWithoutDestruction = 0;
+	const passTime = () => timeWithoutDestruction++;
+	const totalPeaceTime = () => timeWithoutDestruction;
+	const launch = () => {
+		timeWithoutDestruction = -1;
+
+		return "*";
+	}
+
+	setInterval(passTime, 1000);
+
+	return {
+		launch,
+		totalPeaceTime
+	}
+}
+
+const ohno = makeNuclearButton();
+
+ohno.totalPeaceTime();
+```
