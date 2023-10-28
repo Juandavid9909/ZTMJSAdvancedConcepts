@@ -550,3 +550,69 @@ const specialObj = {
 	(): console.log("wooohooo")
 };
 ```
+
+
+## Functions are first class citizens in JavaScript
+
+En JavaScript podemos asignar funciones a variables, recibir y ejecutar funciones como parámetros y también retornar funciones dentro de una función.
+
+```javascript
+// 1
+var stuff = function() {}
+
+// 2
+function a(fn) {
+	fn();
+}
+
+a(function() { console.log("Hi there"); });
+
+// 3
+function b() {
+	return function c() { console.log("bye"); }
+}
+
+b()();
+```
+
+
+## Higher Order Functions
+
+Las funciones de alto orden son simplemente funciones que reciben otras funciones como parámetro o una función que retorna otra función.
+
+```javascript
+const giveAccessTo = (name) =>
+  'Access Granted to ' + name;
+
+function authenticate(person) {
+  let array = [];
+  // you can add checks here for person.level
+  for (let i = 0; i < 50000; i++) {
+    array.push(i);
+  }
+  return giveAccessTo(person.name);
+}
+
+function letPerson(person, fn) { // ++ We now tell the function what data to use when we call it not when we define it + tell it what to do.
+  if (person.level === 'admin') {
+    return fn(person);
+  } else if (person.level === 'user') {
+    return fn(person);
+  }
+}
+
+function sing(person) {
+  return 'la la la my name is ' + person.name;
+}
+
+letPerson({ level: 'user', name: 'Tim' }, sing);
+
+// Ejemplo 2
+const multiply = (number1) => (number2) => number1 * number2;
+
+const multiplyByTwo = multiply(2);
+const multiplyByFive = multiply(5);
+
+multiplyByTwo(4);
+multiplyByFive(6);
+```
