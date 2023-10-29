@@ -713,3 +713,72 @@ const ohno = makeNuclearButton();
 
 ohno.totalPeaceTime();
 ```
+
+
+## Prototypal Inheritance
+
+Si tenemos un arreglo asignado en una variable y ejecutamos `variable.__proto__` podremos ver todos los métodos disponibles de los arreglos asociados a nuestra variable, lo que significa que podemos ver todo lo que tenemos disponible para el tipo de variable (o función) que estamos consultando. Si queremos validar si un objeto (o cualquier otro tipo) hereda el **prototype** de otra, podemos usar el método `variable.isPrototypeOf(variable2)`.
+
+```javascript
+let dragon = {
+  name: 'Tanya',
+  fire: true,
+  fight() {
+    return 5;
+  },
+  sing() {
+    if (this.fire) {
+      return `I am ${this.name}, the breather of fire`;
+    }
+  }
+}
+
+let lizard = {
+  name: 'Kiki',
+  fight() {
+    return 1;
+  }
+}
+
+// Don't do this, bad performance. Show with bind.
+lizard.__proto__ = dragon;
+dragon.isPrototypeOf(lizard);
+console.log(lizard.fire);
+console.log(lizard.sing());
+
+const lizardFire = dragon.sing.bind(lizard);
+console.log(lizardFire());
+```
+
+A pesar de que es muy útil es bastante malo para el rendimiento de nuestra aplicación, sin embargo, hay distintas formas de hacer herencia de los **Prototypes**. Aunque menciono que no es buena para el rendimiento (por la asignación de todo el **Prototype**) es buena para nuestro espacio en memoria, ya que lo que se hereda apunta todo a un mismo lugar en memoria, evitando consumir espacio extra de forma innecesaria. En este caso, todos los tipos (primitivos y no primitivos) heredan de `Object`.
+
+```javascript
+//Every Prototype chain links to a prototype object{}
+function multiplyBy5(num) {
+  return num * 5;
+}
+
+multiplyBy5.__proto__;
+Function.prototype;
+multiplyBy5.__proto__.__proto__;
+Object.prototype;
+multiplyBy5.__proto__.__proto__.__proto__;
+typeof Object;
+typeof {};
+```
+
+Aunque no es eficiente usar el `__proto__` de forma directa tenemos la opción de usar `Object.create(objeto)` para heredar de otro objeto en nuestra variable sin usar el `__proto__`.
+
+```javascript
+// Create our own prototypes:
+var human = { mortal: true }
+var socrates = Object.create(human);
+
+socrates.age = 45; // Funciona
+
+console.log(socrates.mortal); // true
+
+human.isPrototypeOf(socrates); // true
+```
+
+Sólo las funciones pueden tener la propiedad `prototype` (`__proto__` es lo que se hereda, pero la propiedad `prototype` es lo que se hereda a los objetos hijos), pero tener en cuenta que `Object` también es una función, por lo que también cuenta con esta propiedad que se hereda a los distintos tipos primitivos y no primitivos. Al final con esto nos damos cuenta que todo en JavaScript es un objeto.
