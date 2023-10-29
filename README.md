@@ -782,3 +782,334 @@ human.isPrototypeOf(socrates); // true
 ```
 
 Sólo las funciones pueden tener la propiedad `prototype` (`__proto__` es lo que se hereda, pero la propiedad `prototype` es lo que se hereda a los objetos hijos), pero tener en cuenta que `Object` también es una función, por lo que también cuenta con esta propiedad que se hereda a los distintos tipos primitivos y no primitivos. Al final con esto nos damos cuenta que todo en JavaScript es un objeto.
+
+
+# Object Oriented Programming
+
+OOP y FP son paradigmas de programación, estos nos permiten hacer un código más limpio y entendible, es fácil de extender, es más fácil de mantener, eficiente en memoria y se cumple el DRY (Don't Repeat Yourself).
+
+
+## OOP and FP
+
+En todos los programas hay 2 componentes principales, los datos y el comportamiento (funciones). OOP se basa en tener los datos y su comportamiento en un sólo lugar en memoria (objeto) lo que nos permite entender más fácilmente cómo funciona nuestro código. FP separa los datos y el comportamiento para mayor claridad.
+
+En estos 2 paradigmas son indispensables los 2 pilares de JavaScript que ya se encuentran en la anterior sección, ya que los **Closures** van muy de la mano con FP, mientras que **Prototypal Inheritance** con OOP.
+
+
+## Factory Functions
+
+Son funciones que crean objetos por nosotros, sin embargo no estamos siendo óptimos con nuestro espacio en memoria por el Execution Context de las funciones.
+
+```javascript
+// factory function make/create
+function createElf(name, weapon) {
+  //we can also have closures here to hide properties from being changed.
+  return {
+    name,
+    weapon,
+    atack() {
+      return 'atack with ' + weapon
+    }
+  }
+}
+
+const sam = createElf('Sam', 'bow');
+const peter = createElf('Peter', 'bow');
+
+sam.atack();
+```
+
+
+## Object.create
+
+Crea un link entre el objeto que estamos usando para crear y la variable nueva, se hace **Prototypal Inheritance**. A pesar de que podemos crear un link con **Prototypes** usando esta opción, en sí no implementa OOP.
+
+```javascript
+const elfFunctions = {
+  attack: function() {
+    return 'attack with ' + this.weapon;
+  }
+}
+
+function createElf(name, weapon) {
+  // Object.create creates __proto__ link
+  newElf = Object.create(elfFunctions);
+  newElf.name = name;
+  newElf.weapon = weapon;
+  
+  return newElf;
+}
+
+
+const sam = createElf('Sam', 'bow');
+const peter = createElf('Peter', 'bow');
+sam.attack();
+```
+
+
+## Constructor Functions
+
+Es como el constructor de las clases en ES6, porque podemos redefinir las variables/propiedades de nuestro objeto. Al ser una función tiene acceso a **Prototypes** por lo que podemos ir agregando más funciones entre otras cosas.
+
+```javascript
+//Constructor Functions
+function Elf(name, weapon) {
+  this.name = name;
+  this.weapon = weapon;
+}
+
+Elf.prototype.attack = function() { 
+  return 'attack with ' + this.weapon;
+}
+const sam = new Elf('Sam', 'bow');
+const peter = new Elf('Peter', 'bow');
+
+sam.attack();
+```
+
+Esto nos permite tener la función `attack` en un mismo lugar de memoria a pesar de que hay 2 objetos. No olvidemos que para definir una función en **Prototypes** debemos crear la función sin arrow functions, ya que las funciones de flecha tienen Lexical Scope, por lo que terminarán apuntando al Global Scope.
+
+
+## ES6 Classes
+
+ES6 implementó las clases que conocemos en Java, aquí podemos definir nuestro propio constructor y los métodos que necesitemos. Las clases siguen usando `Prototypal Inheritance`, pero es la mejor forma de implementar la programación orientada a objetos. Por lo tanto, si nos preguntan si JavaScript tiene clases podríamos decir que sí, como azúcar sintáctico, pero las clases siguen siendo **Prototypal Inheritance**.
+
+En una entrevista nos podrían preguntar el por qué los métdos de las clases no se declaran dentro del constructor, y esto es porque cada vez que usamos el `new` en una declaración de una variable (instanciar una clase) el constructor se ejecuta, y asignará lo que tengamos en nuestro constructor a las propiedades de la clase ya que son datos únicos que necesitaremos en cada objeto que se instancie de la clase, mientras que un método de la clase se agregaría al **Prototype** y se compartiría con las instancias de la clase creadas, esto quiere decir que se crearía la función una vez en memoria y todas las instancias accederían a dicha ubicación en memoria, sin definir la misma función para cada una de estas instancias.
+
+```javascript
+class Elf {
+  constructor(name, weapon) {
+    this.name = name;
+    this.weapon = weapon;
+  }
+  
+  attack() {
+    return 'attack with ' + this.weapon;
+  }
+}
+
+const fiona = new Elf('Fiona', 'ninja stars');
+console.log(fiona instanceof Elf);
+
+const ben = new Elf('Ben', 'bow');
+
+fiona.attack();
+```
+
+
+## This - 4 ways
+
+Hay 4 estrategias para usar la palabra reservada `this`, a continuación se ven:
+
+```javascript
+// new binding
+function Person(name, age) {
+  this.name = name;
+  this.age =age;
+  
+  console.log(this);
+}
+
+const person1 = new Person('Xavier', 55);
+
+// implicit binding
+const person = {
+  name: 'Karen',
+  age: 40,
+  hi() {
+    console.log('hi' + this.name)
+  }
+}
+
+person.hi();
+
+// explicit binding
+const person3 = {
+  name: 'Karen',
+  age: 40,
+  hi: function() {
+    console.log('hi' + this.setTimeout);
+  }.bind(window)
+}
+
+person3.hi();
+
+// arrow functions
+const person4 = {
+  name: 'Karen',
+  age: 40,
+  hi: function() {
+    var inner = () => {
+      console.log('hi ' + this.name);
+    }
+    
+    return inner();
+  }
+}
+
+person4.hi();
+```
+
+
+## Inheritance
+
+Si necesitamos usar de base las propiedades de una clase y agregar algunas nuevas (o métodos) la herencia podría sernos de mucha utilizar, para seguir haciendo uso de los **Prototypes** y tener una estructura de datos personalizada.
+
+```javascript
+class Character {
+  constructor(name, weapon) {
+    this.name = name;
+    this.weapon = weapon;
+  }
+  
+  attack() {
+    return 'attack with ' + this.weapon;
+  }
+}
+
+class Elf extends Character { 
+  constructor(name, weapon, type) {
+    // console.log('what am i?', this); this gives an error
+    super(name, weapon) ;
+    console.log('what am i?', this);
+    this.type = type;
+  }
+}
+
+class Ogre extends Character {
+  constructor(name, weapon, color) {
+    super(name, weapon);
+    this.color = color;
+  }
+  
+  makeFort() { // this is like extending our prototype.
+    return 'strongest fort in the world made';
+  }
+}
+
+const houseElf = new Elf('Dolby', 'cloth', 'house');
+//houseElf.makeFort() // error
+const shrek = new Ogre('Shrek', 'club', 'green');
+shrek.makeFort();
+```
+
+En el ejemplo anterior al crear la función `makeFort` JavaScript hará algo como `Ogre.prototype.makeFort = ...` para agregar nuestra función al **Prototype** de Ogre. Otra cosa es que si ejecutamos `Ogre.prototype.isPrototypeOf(shref)` el resultado ser+a `true`, lo mismo si ejecutamos `shrek instanceof Ogre`.
+
+
+## Polymorphism
+
+Es la habilidad de redefinir métodos para clases derivadas.
+
+```javascript
+class Character {
+  constructor(name, weapon) {
+    this.name = name;
+    this.weapon = weapon;
+  }
+  
+  attack() {
+    return 'atack with ' + this.weapon;
+  }
+}
+
+class Elf extends Character { 
+  constructor(name, weapon, type) {
+    // console.log('what am i?', this); this gives an error
+    super(name, weapon) ;
+    
+    console.log('what am i?', this);
+    
+    this.type = type;
+  }
+}
+
+class Ogre extends Character {
+  constructor(name, weapon, color) {
+    super(name, weapon);
+    
+    this.color = color;
+  }
+  makeFort() { // this is like extending our prototype.
+	super.makeFort(); // execute parent method
+    return 'strongest fort in the world made';
+  }
+}
+
+const houseElf = new Elf('Dolby', 'cloth', 'house');
+//houseElf.makeFort() // error
+const shrek = new Ogre('Shrek', 'club', 'green');
+shrek.makeFort();
+```
+
+
+## Public vs Private
+
+Esto nos permite generar mayor seguridad en nuestras clases, ya que si decidimos que una variable o método debe ser `private` sólo podrán ser usados dentro de la clase, no afuera a pesar de que exista una instancia hacia la clase. Con `public` habilitamos el acceso desde cualquier parte del código.
+
+```javascript
+// Example 1
+class  Employee  {
+	#name = "Test"; // private field
+	
+	setName(name)  {
+		this.#name = name;
+	}
+}
+
+const emp = new Employee();
+emp.#name = 'New'; // error
+emp.setName('New'); // ok
+
+// Example 2
+class  Employee  {
+	#name = "Test";
+	
+	constructor(name)  {
+		this.#setName(name); // ok
+	}
+
+	#setName(name) { // Private method
+		this.#name = name;
+	}
+}
+
+const emp =  new Employee('New'); // ok
+emp.#setName('New'); // error
+```
+
+
+## OOP in React.js
+
+```javascript
+class Toggle extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = { isToggleOn: true };
+
+		// This binding is necessary to make `this` work in the callback
+		this.handleClick = this.handleClick.bind(this);
+	}
+
+	handleClick() {
+		this.setState(prevState => ({
+			isToggleOn: !prevState.isToggleOn
+		}));
+	}
+
+	render() {
+		return (
+			<button onClick={this.handleClick}>
+				{ this.state.isToggleOn ? 'ON' : 'OFF' }
+			</button>
+		);
+	}
+}
+```
+
+
+## 4 pillars of OOP
+
+1. **Encapsulation:** OOP pone las cosas en un contenedor y las organiza en unidades para modelar aplicaciones del mundo real. Esto nos permite tener un código más fácil de mantener y más reusable.
+2. **Abstraction:** Se oculta la complejidad del usuario, es decir que el usuario simplemente debe instanciar el objeto, y nosotros le brindaremos todas las propiedades y métodos que puede usar.
+3. **Inheritance:** Heredar de otras clases evitamos reescribir el mismo código, al igual que ahorramos espacio en memoria.
+4. **Polymorphism:** Nos permite llamar un método de una misma forma y obtener resultados distintos, es decir que en una clase hija podemos sobreescribir un método para darle un tratamiento diferente al objeto en sí, sin afectar el método de la clase padre.
