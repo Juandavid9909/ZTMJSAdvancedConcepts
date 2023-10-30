@@ -786,7 +786,12 @@ Sólo las funciones pueden tener la propiedad `prototype` (`__proto__` es lo que
 
 # Object Oriented Programming
 
-OOP y FP son paradigmas de programación, estos nos permiten hacer un código más limpio y entendible, es fácil de extender, es más fácil de mantener, eficiente en memoria y se cumple el DRY (Don't Repeat Yourself).
+OOP y FP son paradigmas de programación, estos nos permiten:
+- Tener un código más limpio y entendible.
+- Es fácil de extender.
+- Es fácil de mantener.
+- Eficiente en memoria.
+- DRY (Don't Repeat Yourself).
 
 
 ## OOP and FP
@@ -1113,3 +1118,161 @@ class Toggle extends React.Component {
 2. **Abstraction:** Se oculta la complejidad del usuario, es decir que el usuario simplemente debe instanciar el objeto, y nosotros le brindaremos todas las propiedades y métodos que puede usar.
 3. **Inheritance:** Heredar de otras clases evitamos reescribir el mismo código, al igual que ahorramos espacio en memoria.
 4. **Polymorphism:** Nos permite llamar un método de una misma forma y obtener resultados distintos, es decir que en una clase hija podemos sobreescribir un método para darle un tratamiento diferente al objeto en sí, sin afectar el método de la clase padre.
+
+
+# Functional Programming
+
+Es muy útil para la computación distribuida (cuando hay varias máquinas interactuando con datos) y también para el paralelismo (máquinas trabajando con los mismos datos al mismo tiempo).
+
+
+## Pillar of FP
+
+1. **Pure Functions:** Se separan los datos de un programa y su comportamiento de nuestro programa. Todos los objetos creados en programación funcional son inmutables (una vez creado no se puede modificar).
+
+
+## Pure Functions
+
+Una función siempre debe retornar la misma respuesta dado el mismo valor de entrada y la función no puede modificar nada fuera de su scope.
+
+```javascript
+// Ejemplo de pure function
+// no side effects
+// input -> output
+const array = [1, 2, 3];
+
+function removeLastItem(arr) {
+	const newArray = [].concat(arr);
+
+	newArray.pop();
+
+	return newArray;
+}
+
+function multiplyBy2(arr) {
+	return arr.map((item) => item * 2);
+}
+
+const array2 = removeLastItem(array);
+const array3 = multiplyBy2(array);
+
+console.log(array, array2, array3);
+
+// Ejemplo de una no pure function
+// No es pure function porque está usando console.log (window), es decir que está afectando cosas fuera de su scope
+function a() {
+	console.log("hi");
+}
+```
+
+### Referencial Transparency
+Se valida si cambiando algún resultado de una función por el valor en sí el resultado en nuestro código cambia, un ejemplo:
+
+```javascript
+function a(num1, num2) {
+	return num1 + num2;
+}
+
+function b(num) {
+	return num * 2;
+}
+
+// Comparisons
+b(a(3, 4));
+b(7);
+```
+
+Las funciones puras son más fáciles de probar y evitan muchos bugs porque no hay mutación. Cada función debe tener un objetivo único en nuestro código, debe tener un `return`, deben ser puras, no deben compartir states, tener un state inmutable (no modificamos nuestro state global), deben ser componibles y predecibles.
+
+
+## Indempotence
+
+Es muy parecido a una función pura, ya que evalúa que dado un valor de entrada siempre tenga el mismo valor de salida, no importa si afecta o se comunica con el contexto global. Es muy importante para la computación distribuida y paralelismo porque hace nuestro código predecible.
+
+```javascript
+// Idempotence:
+function notGood() {
+  return Math.random();
+  // new Date();
+}
+
+function good() {
+  return 5;
+}
+
+Math.abs(Math.abs(10));
+```
+
+
+## Imperative vs Declarative
+
+El código imperativo le dice a la máquina qué hacer y cómo hacerlo, el código declarativo qué hacer y qué debería de suceder.
+
+```javascript
+// Examples
+// Imperative
+for(let i = 0; i < 1000; i++) {
+	console.log(i);
+}
+
+// Declarative
+[1, 2, 3].forEach((item) => console.log(item));
+```
+
+
+## Inmutability
+
+Simplemente significa no cambiar los datos del mundo exterior de nuestra función.
+
+```javascript
+const obj = { name: 'Andrei' };
+
+function clone(obj) {
+  return { ...obj }; // this is pure
+}
+
+function updateName(obj) {
+  const obj2 = clone(obj);
+  
+  obj2.name = 'Nana';
+  
+  return obj2;
+}
+
+const updatedObj = updateName(obj);
+console.log(obj, updatedObj);
+```
+
+
+## Partial Application
+
+Procesa una función con un pequeño número de parámetros.
+
+```javascript
+//Partial Application
+const multiply = (a, b, c) => a * b * c;
+const partialMultiplyBy5 = multiply.bind(null, 5);
+
+partialMultiplyBy5(10, 20);
+```
+
+
+## Compose and Pipe
+
+Es un principio de diseño de sistemas, que va muy de la mano con la relación entre componentes. Un sistema altamente componible provee componentes que pueden ser seleccionados y armados en varias combinaciones. La diferencia entre Compose y Pipe es que Compose ejecuta las funciones de derecha a izquierda, y Pipe de izquierda a derecha.
+
+```javascript
+fn1(fn2(fn3(50)));
+
+compose(fn1, fn2, fn3)(50); // Right to left
+pipe(fn3, fn2, fn1)(50); // left to right
+
+const compose = (f, g) => (a) => f(g(a));
+const pipe = (f, g) => (a) => g(f(a));
+const multiplyBy3AndAbsolute = compose((num) => num*3, Math.abs);
+console.log(multiplyBy3AndAbsolute(-50));
+```
+
+
+## Arity
+
+Es el número de argumentos que una función toma. Entre menor sea el **Arity** de una función más fácil será esta de entender, además que será mucho más sencillo construir su **Compose** o su **Pipe**.
