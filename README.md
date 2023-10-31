@@ -1299,3 +1299,91 @@ Es muy buena procesando muchos datos de información para las aplicaciones, si e
 
 ### OOP
 Si tienes muchas cosas como personajes en un juego con no tantas operaciones, OOP sería una gran solución.
+
+
+# Asynchronous JavaScript
+
+Primero hay que recordar que el engine de JavaScript cuando ve algo asíncrono, con timeout, promesas, etc, esta parte es enviada al Web API.
+
+También es importante tener claro que el engine de JavaScript tiene el Memory Heap que es donde guarda todos los datos de las variables y el Call Stack donde se guardan las instrucciones que hacen falta por ejecutar.
+
+
+## JavaScript Run-Time Environment
+
+![Runtime de JavaScript](https://miro.medium.com/v2/resize:fit:700/0*0WHvNqHCfpOtd4GB)
+
+Como dije anteriormente, el Memory Heap se encarga de guardar los valores de las variables que declaramos, y el Call Stack guarda todas las tareas que debemos ejecutar, sin embargo si hay una promesa o un setTimeout estos se envían al Web APIs, una vez cumple el tiempo de espera el setTimeout esta ejecución se mueve al Callback Queue, y el Event Loop se encarga de verificar que el Call Stack esté vacío, una vez está vacío verifica el Callback Queue y envía las tareas que se pueden ejecutar nuevamente al Call Stack para finalizar la ejecución de las tareas restantes.
+
+```javascript
+console.log(1);
+setTimeout(()=>console.log(2), 0);
+Promise.resolve().then(()=>console.log(3));
+setTimeout(()=>console.log(4), 1);
+console.log(5);
+
+// Resultados -> 1, 5, 3, 2, 4
+```
+
+
+## ¿Es JavaScript un lenguaje de un sólo hilo que no puede bloquearse?
+
+Para empezar el que sea de un sólo hilo significa que sólo tiene un Call Stack, es decir que sólo puedes hacer una cosa a la vez, sin embargo este puede ser no bloqueante ya que hace una sola cosa a la vez para no bloquear el único hilo.
+
+
+## Promises
+
+Nos permiten ejecutar código de forma asíncrona y son una gran opción para hacerlo
+
+```javascript
+const promise = new Promise((resolve, reject) => {
+	if(true) {
+		resolve("Stuff Worked");
+	}
+	else {
+		reject("Error, it broke");
+	}
+});
+
+promise
+	.then((result) => console.log(result))
+	.catch(console.log);
+
+const promise2 = new Promise((resolve, reject) => {
+	setTimeout(resolve, 100, "HIII");
+});
+
+const promise3 = new Promise((resolve, reject) => {
+	setTimeout(resolve, 1000, "POOKIE");
+});
+
+const promise4 = new Promise((resolve, reject) => {
+	setTimeout(resolve, 3000, "Is it me you are looking for?");
+});
+
+// Esperar a que todas se completen, así se logren cerrar en menos tiempo algunas
+Promise.all([promise, promise2, promise3, promise4])
+	.then((values) => {
+		console.log(values);
+	});
+```
+
+Un ejemplo de uso de promesas en proyectos reales:
+
+```javascript
+const urls = [
+	"https://jsonplaceholder.typicode.com/users",
+	"https://jsonplaceholder.typicode.com/posts"
+	"https://jsonplaceholder.typicode.com/albums"
+];
+
+Promise.all(urls.map((url) => {
+	return fetch(url)
+		.then((resp) => resp.json());
+})).then((results) => {
+	console.log(results[0]);
+	console.log(results[1]);
+	console.log(results[2]);
+}).catch(() => console.log("error"));
+```
+
+Las promesas son como event listeners exceptuando que una promesa sólo puede o terminar bien o tener algún error.
