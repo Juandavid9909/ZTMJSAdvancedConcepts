@@ -1276,3 +1276,26 @@ console.log(multiplyBy3AndAbsolute(-50));
 ## Arity
 
 Es el número de argumentos que una función toma. Entre menor sea el **Arity** de una función más fácil será esta de entender, además que será mucho más sencillo construir su **Compose** o su **Pipe**.
+
+
+# OOP vs FP
+
+La programación funcional se enfoca en **composition** y la programación orientada a objetos se enfoca en **inheritance**. Con la herencia no enfocamos en el "que es" y con la composición en "qué tiene".
+
+Los mayores problemas con OOP es que siempre se heredan todos los métodos y atributos de la superclase, es decir que si en una clase hija sólo necesitáramos un método pero la superclase tiene 3, tendremos todos esos 3 a pesar de que no los vayamos a usar. Para evitar esto podemos usar la composición de FP ya que esta nos permite hacer buenas soluciones a gran escala.
+
+
+## Tabla de comparación entre ambos
+
+| OOP | FP |
+|--|--|
+| Muchas operaciones en datos fijos | Pocas operaciones en datos comunes |
+| Stateless (inmutable) | Stateful |
+| Funciones puras (no se afecta el scope global) | Side effects |
+| Declarativo (qué queremos que se haga) | Imperativo (cómo se hacen las cosas) |
+
+### FP
+Es muy buena procesando muchos datos de información para las aplicaciones, si estás analizando data o usando un modelo de Machine Learning la programación funcional sería una buena opción ya que funciona muy bien para el alto rendimiento y procesamientos. Si tienes pocas cosas que requieren muchas operaciones, muchas funciones pequeñas también es una buena opción.
+
+### OOP
+Si tienes muchas cosas como personajes en un juego con no tantas operaciones, OOP sería una gran solución.
