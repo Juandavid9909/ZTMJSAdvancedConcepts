@@ -1387,3 +1387,201 @@ Promise.all(urls.map((url) => {
 ```
 
 Las promesas son como event listeners exceptuando que una promesa sólo puede o terminar bien o tener algún error.
+
+
+## Async Await
+
+Son promesas pero en feature nuevo de JavaScript, nos permiten tener un código más fácil de leer, ya que hace parecer el código asíncrono síncrono. Como mencioné son promesas con azúcar sintáctico.
+
+```javascript
+// En forma de promesa
+movePlayer(100, "Left")
+	.then(() => movePlayer(400, "Left"))
+	.then(() => movePlayer(10, "Right"))
+	.then(() => movePlayer(330, "Left"));
+
+// Async Await
+async function playerStart() {
+	const first = await movePlayer(100, "Left");
+	const second = await movePlayer(400, "Left");
+	await movePlayer(10, "Right");
+	await movePlayer(330, "Left");
+}
+
+// Otro ejemplo
+fetch("https://jsonplaceholder.typicode.com/users")
+	.then((resp) => res.json())
+	.then(console.log);
+
+async function fetchUsers() {
+	const resp = await fetch("https://jsonplaceholder.typicode.com/users");
+	const data = await resp.json();
+
+	console.log(data);
+}
+
+// Último ejemplo
+const urls = [
+	"https://jsonplaceholder.typicode.com/users",
+	"https://jsonplaceholder.typicode.com/posts",
+	"https://jsonplaceholder.typicode.com/albums"
+];
+
+Promise.all(urls.map((url) => fetch(url).then((resp) => resp.json())))
+	.then((array) => {
+		console.log("users", array[0]);
+		console.log("posts", array[1]);
+		console.log("albums", array[2]);
+	}).catch("oops")
+	.finally(() => console.log("extra"));
+
+const getData = async function() {
+	const [users, posts, albums] = await Promise.all(urls.map((url) => fetch(url).then((resp) => resp.json())));
+
+	console.log("users", users);
+	console.log("posts", posts);
+	console.log("albums", albums);
+}
+```
+
+
+## ES9 (ES2018)
+
+```javascript
+// Object spread operator
+const animals = {
+	tiger: 23,
+	lion: 5,
+	monkey: 2
+}
+
+const { tiger, ...rest } = animals;
+
+const array = [1, 2, 3, 4, 5];
+
+function sum(a, b, c, d, e) {
+	return a + b + c + d + e;
+}
+
+sum(...array);
+
+// for await of
+const getData2 = async function() {
+	const arrayOfPromises = urls.map((url) => fetch(url));
+
+	for await (let request of arrayOfPromises) {
+		const data = await request.json();
+
+		console.log(data);
+	}
+}
+```
+
+
+## Job Queue
+
+Las promesas tienen su propia Queue, su nombre es Job Queue o Microtask Queue, es un poco más pequeña que la Callback Queue o Task Queue, pero tiene a su vez más prioridad que esta última, es decir que el Event Loop revisará primero el Job Queue y validará que no haya nada incluso antes de validar la Callback Queue.
+
+![JavaScript RunTime](https://miro.medium.com/v2/resize:fit:1400/1*N9eQtqwpkCjn39DmL8N0cQ.png)
+
+```javascript
+// Callback Queue - Task Queue
+setTimeout(()=>{ console.log('1', 'is the loneliest number') }, 0);
+setTimeout(()=>{ console.log('2', 'can be as bad as one') }, 10);
+
+// Job Queue - Microtask Queue
+Promise.resolve('hi').then((data)=> console.log('2', data));
+
+// Not asynchronous
+console.log('3','is a crowd');
+
+// Resultado: 3, 2, undefined, 1, 2
+```
+
+
+## Parallel, Sequence and Race
+
+### Parallel
+Quiero correr varias consultas (promesas, llamados fetch, etc) a la vez y que se realicen al mismo tiempo.
+
+### Sequential
+Primero quiero correr el primero, una vez esta termine de forma exitosa ejecutar la segunda, luego de que finalice correctamente la tercera y así sucesivamente.
+
+### Race
+Quiero hacer 3 consultas, pero apenas termine la primera ignora el resto.
+
+```javascript
+const promisify = (item, delay) =>
+  new Promise((resolve) =>
+    setTimeout(() =>
+      resolve(item), delay));
+
+const a = () => promisify('a', 100);
+const b = () => promisify('b', 5000);
+const c = () => promisify('c', 3000);
+
+async function parallel() {
+  const promises = [a(), b(), c()];
+  const [output1, output2, output3] = await Promise.all(promises);
+  return `parallel is done: ${ output1 } ${ output2 } ${ output3 }`;
+}
+
+async function race() {
+  const promises = [a(), b(), c()];
+  const output1 = await Promise.race(promises);
+  return `race is done: ${ output1 }`;
+}
+
+async function sequence() {
+  const output1 = await a();
+  const output2 = await b();
+  const output3 = await c();
+  return `sequence is done ${ output1 } ${ output2 } ${ output3 }`;
+}
+
+sequence().then(console.log);
+parallel().then(console.log);
+race().then(console.log);
+```
+
+
+## .allSettled()
+
+`Promise.all()` ejecuta todas las promesas en un arreglo y entra al `then` sólo si todas se ejecutan de forma correcta, de lo contrario hay que hacer un control de errores con `catch`. Sin embargo, podemos usar `Promise.allSettled()` pasando el mismo arreglo de promesas para ejecutarlas y en este caso él ejecutará todas sin importar si alguna falla o no, y nos retornará los resultados junto con un status para saber si terminó de forma exitosa o si hubo un error.
+
+```javascript
+const promiseOne = new Promise((resolve, reject) => setTimeout(resolve, 3000));
+const promiseTwo = new Promise((resolve, reject) => setTimeout(reject, 3000));
+
+// Dará error porque para que funcione deben de funcionar todas de forma correcta, por lo tanto agregamos el catch
+Promise.all([promiseOne, promiseTwo])
+	.then((data) => console.log(data))
+	.catch((e) => console.log("Something failed", e));
+
+// Ejecuta todas y retorna los resultados con un status fulfilled o rejected
+Promise.allSettled([promiseOne, promiseTwo])
+	.then((data) => console.log(data))
+	.catch((e) => console.log("Something failed", e));
+```
+
+
+## .any()
+
+A diferencia de las anteriores `.any()` responde si al menos una de las promesas finaliza de forma correcta, si ninguna se ejecuta correctamente se disparará un error.
+
+```javascript
+const p1 =  new  Promise((resolve, reject)  =>  {
+	setTimeout(()  => resolve("A"),  Math.floor(Math.random()  *  1000));
+});
+const p2 =  new  Promise((resolve, reject)  =>  {
+	setTimeout(()  => resolve("B"),  Math.floor(Math.random()  *  1000));
+});
+const p3 =  new  Promise((resolve, reject)  =>  {
+	setTimeout(()  => resolve("C"),  Math.floor(Math.random()  *  1000));
+});
+
+(async function  ()  {
+	const result = await Promise.any([p1, p2, p3]);
+	console.log(result);  // Prints "A", "B" or "C"
+})();
+```
