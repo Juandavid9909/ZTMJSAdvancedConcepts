@@ -86,7 +86,9 @@ JavaScript es Single Threaded, esto significa que ejecuta una función a la vez,
 
 JavaScript tiene Hoisting, es decir que tiene la capacidad de no romper la ejecución de código cuando llamamos a una variable o una función antes de su inicialización, para las variables sólo funciona con `var`, también tiene en cuenta la reasignación con `var` de una misma variable, de ser así no declara una segunda variable sino que reescribe el valor de la primera.
 
-```javascript
+```javascript.
+
+```
 console.log("1------");
 console.log(teddy);
 console.log(sign());
@@ -1584,4 +1586,138 @@ const p3 =  new  Promise((resolve, reject)  =>  {
 	const result = await Promise.any([p1, p2, p3]);
 	console.log(result);  // Prints "A", "B" or "C"
 })();
+```
+
+
+# Modules
+
+Nos permite segmentar nuestro código en varios archivos, lo que nos deja tener un mejor orden.
+
+```javascript
+user = {};
+
+function signin(user) {
+	var textfield = "hehehe";
+}
+
+function isHuman(user) {
+	...
+}
+
+// tight coupling
+```
+
+
+## Module Pattern
+
+Nos permite exponer las funciones que queramos a los demás archivos, los que no deseemos exponer no serán vistas en las opciones.
+
+```javascript
+// Global Scope
+	// Module Scope
+		// Function Scope
+			// Block Scope - let and const
+
+// IIFE
+var fightModule = (function() {
+	var harry = "potter";
+	var voldemor = "He who must not be named";
+
+	function fight(char1, char2) {
+		var attack1 = Math.floor(Math.random() * char1.length);
+		var attack2 = Math.floor(Math.random() * char2.length);
+
+		return attack1 > attack2 ? `${ char1 } wins` : `${ char2 } wins`;
+	}
+
+	return {
+		fight
+	}
+})()
+```
+
+
+## Ventajas y desventajas
+
+### Ventajas
+- Segmentar el código, sobre todo el scope de cada función ya que evitamos que desde otro archivo se modifiquen nuestras funciones y variables.
+- Permite a los desarrolladores trabajar a la vez en distintos módulos.
+- La reusabilidad ya que se pueden importar en cualquier archivo JavaScript sin problemas.
+
+### Desventajas
+- Seguimos agregando funciones al scope global.
+- El orden de importación de los `<script></script>` debe ser el correcto, sino la app mostrará errores.
+
+
+## CommonJS and AMD (Asynchronous Module Definition)
+
+Resuelven el problema de diseñar un módulo de la manera que no tendremos interferencia con el scope global.
+
+```javascript
+// CommonJS
+var module1 = require("module1");
+var module2 = require("module2");
+
+function tight() {
+
+}
+
+module.exports = {
+	fight
+};
+
+// AMD
+define(["module1", "module2"],
+	function(module1Import, module2Import) {
+		var fight = module1Import.fight;
+		var module2 = module2Import; // .importedFunc2
+
+		function dance() {
+
+		}
+
+		return {
+			dance
+		}
+	});
+```
+
+Opciones como Webpack toman todos estos archivos dependientes y nos permiten generar un bundle de todo el código en un sólo archivo.
+
+
+## UMD (Universal Module Definition)
+
+Era muy parecido a AMD, sin embargo esto no solucionó el problema del scope global.
+
+
+## ES6 Modules
+
+Esta es la forma nativa en la que JavaScript incorporó los módulos y a su vez lo que agregamos no se muestra en el window.
+
+```javascript
+import module1 from "module1";
+import module2 from "module2";
+
+const harry = "potter";
+const voldemort = "He who must not be named";
+
+export function jump() {
+	console.log("Jump here");
+}
+
+export default function fight(char1, char2) {
+		const attack1 = Math.floor(Math.random() * char1.length);
+		const attack2 = Math.floor(Math.random() * char2.length);
+
+		return attack1 > attack2 ? `${ char1 } wins` : `${ char2 } wins`;
+	}
+```
+
+```html
+<script type="module">
+	import fight, { jump } from "./script";
+
+	console.log(fight("ron", "hedwig"));
+	console.log(jump());
+</script>
 ```
