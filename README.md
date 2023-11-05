@@ -1721,3 +1721,141 @@ export default function fight(char1, char2) {
 	console.log(jump());
 </script>
 ```
+
+
+# Errors
+
+Siempre habrá errores que podremos controlar en JavaScript, a continuación más información al respecto:
+
+```javascript
+new Error("Ooops");
+
+throw new Error();
+
+throw "string";
+
+throw true;
+
+throw Error;
+
+const error = new Error("oopsie"); // Tenemos las propiedades: name, message, stack
+
+new SyntaxError;
+
+new ReferenceError;
+
+// JavaScript: Runtime catch: onerror()
+// NodeJS: process.on("uncaughtException")
+```
+
+
+## Try Catch
+
+Así podemos controlar los errores para evitar que nuestro código se deje de ejecutar.
+
+```javascript
+function fail() {
+  try {
+    console.log('this works');
+    throw new Error('oopsie');
+  } catch(e) {
+    console.log('error', e);
+  } finally {
+    console.log('still good');
+    return 'returning from fail';
+  }
+  console.log('never going to get here'); // not reachable
+}
+
+fail();
+```
+
+
+## Async Error Handling
+
+Para controlar los errores en el código asíncrono podemos hacer:
+
+```javascript
+Promise.resolve('asyncfail')
+  .then(response => {
+      console.log(response);
+      throw new Error('#1 fail');
+  })
+  .then(response => {
+      console.log(response);
+  })
+  .catch(err => {
+      console.error('error', err.message);
+  })
+  .then(response => {
+      console.log('hi am I still needed?', response);
+      return 'done';
+  })
+  .catch(err => {
+      console.error(err);
+      return 'failed';
+  });
+
+// Ejemplo 2
+(async function() {
+    try {
+        await Promise.reject('oopsie');
+    } catch (err) {
+        console.error(err);
+    }
+
+    console.log('This is still good!');
+})();
+```
+
+
+## Extending Errors
+
+```javascript
+class authenticationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ValidationError';
+    this.message = message;
+  }
+}
+
+class PermissionError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PermissionError';
+    this.message = message;
+    this.favouriteSnack = 'grapes';
+  }
+}
+
+class DatabaseError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'DatabaseError';
+    this.message = message;
+  }
+}
+
+throw new PermissionError('A permission error');
+```
+
+
+## Ejercicio de ejemplo
+
+```javascript
+(function () {
+  try {
+    throw new Error();
+  } catch (err) {
+    var err = 5;
+    var boo = 10;
+    console.log(err);
+  }
+  //Guess what the output is here:
+  console.log(err);
+  console.log(boo);
+})();
+
+// 5, undefined, 10
+```
