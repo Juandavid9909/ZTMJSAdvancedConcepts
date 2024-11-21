@@ -14,7 +14,7 @@ Luego de todo este inconveniente por no saber cuál usar entre estas 2 opciones 
 ### JavaScript Engine
 Teniendo esto claro ahora miremos el paso a paso del engine de JavaScript:
 
-![JavaScript Engine](https://images.ctfassets.net/aq13lwl6616q/3o7Q3edCrVJG9Zzj6VMZ1K/28136a643636dfa04090f3fb5c5467ff/javascript_engine.png)
+![JavaScript Engine](https://github.com/user-attachments/assets/f288dd50-ff77-4eaa-b002-2cb7c5f55b34)
 
 1. Primero se parsea el código.
 2. Se convierte en un árbol de sintaxis abstracto (Abstract Sintax Tree).
@@ -1312,7 +1312,7 @@ También es importante tener claro que el engine de JavaScript tiene el Memory H
 
 ## JavaScript Run-Time Environment
 
-![Runtime de JavaScript](https://miro.medium.com/v2/resize:fit:700/0*0WHvNqHCfpOtd4GB)
+![Runtime de JavaScript](https://github.com/user-attachments/assets/1ceb0e68-e1a2-4b00-a432-eafe2945520f)
 
 Como dije anteriormente, el Memory Heap se encarga de guardar los valores de las variables que declaramos, y el Call Stack guarda todas las tareas que debemos ejecutar, sin embargo si hay una promesa o un setTimeout estos se envían al Web APIs, una vez cumple el tiempo de espera el setTimeout esta ejecución se mueve al Callback Queue, y el Event Loop se encarga de verificar que el Call Stack esté vacío, una vez está vacío verifica el Callback Queue y envía las tareas que se pueden ejecutar nuevamente al Call Stack para finalizar la ejecución de las tareas restantes.
 
@@ -1484,7 +1484,7 @@ const getData2 = async function() {
 
 Las promesas tienen su propia Queue, su nombre es Job Queue o Microtask Queue, es un poco más pequeña que la Callback Queue o Task Queue, pero tiene a su vez más prioridad que esta última, es decir que el Event Loop revisará primero el Job Queue y validará que no haya nada incluso antes de validar la Callback Queue.
 
-![JavaScript RunTime](https://miro.medium.com/v2/resize:fit:1400/1*N9eQtqwpkCjn39DmL8N0cQ.png)
+![JavaScript RunTime](https://github.com/user-attachments/assets/2c4881c0-cdc9-4f00-b049-2858f4c66070)
 
 ```javascript
 // Callback Queue - Task Queue
